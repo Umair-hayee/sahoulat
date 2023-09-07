@@ -52,7 +52,7 @@ class ProfileController extends Controller
             'language_id' => $request->language_id,
             'proficiency_id' => $request->proficiency_id
         ]);
-        return redirect()->route('home')->with(['success' => 'Language added successfully!']);
+        return redirect()->route('seller.dashboard')->with(['success' => 'Language added successfully!']);
     }
 
     public function addSkill(Request $request)
@@ -109,13 +109,15 @@ class ProfileController extends Controller
         $this->validate($request, [
             'image' => 'required|image',
             'title' => 'required',
-            'price' => 'required'
+            'price' => 'required',
+            'sub_tag_id' => 'required',
         ]);
         $data = [];
         $data = [
             'title' => $request->title,
             'price' => $request->price,
             'user_id' => auth()->user()->id,
+            'sub_tag_id' => $request->sub_tag_id,
         ];
         if($request->has('image')){
             $file = $request->image;

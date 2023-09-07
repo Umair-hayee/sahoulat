@@ -16,10 +16,17 @@ class UserGig extends Model
         'price',
         'description',
         'is_active',
+        'sub_tag_id',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function subtag()
+    {
+        return $this->belongsTo(SubTag::class, 'sub_tag_id');
+    }
+
 }

@@ -5,11 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {{-- <link href="/dist/output.css" rel="stylesheet"> --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <title>Home | Sahoulat</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
         body {
             font-family: 'Poppins', sans-serif;
+        }
+
+        .footer-social-links i{
+            font-size: 25px !important;
+            margin-left: 5px;
         }
     </style>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -23,8 +29,8 @@
                     <a href=""><img src="{{asset('assets/imgs/Logo Sahoulatb.png')}}" alt="" class="h-16 w-16"></a>
                 </div>
                 <div class="nav-links flex mt-5 text-[#292929] font-medium">
-                    <a href="/home" class="mx-5 hover:bg-[#C5000040] px-3 h-8 pt-1 rounded-md"><span>Home</span></a>
-                    <a href="" class="mx-5 hover:bg-[#C5000040] px-3 h-8 pt-1 rounded-md"><span>Become A
+                    <a href="/" class="mx-5 hover:bg-[#C5000040] px-3 h-8 pt-1 rounded-md"><span>Home</span></a>
+                    <a href="/register" class="mx-5 hover:bg-[#C5000040] px-3 h-8 pt-1 rounded-md"><span>Become A
                             Seller</span></a>
                     <a href="" class="mx-5 hover:bg-[#C5000040] px-3 h-8 pt-1 rounded-md"><span>About</span></a>
                     @auth
@@ -377,10 +383,11 @@
                         <span class="text-base">Follow us on social media
                             and keep in touch </span>
                         <div class="footer-social-links flex mt-3">
-                            <a href="" class="mr-3"><img src="{{asset('assets/imgs/Vector-1.png')}}"
+                            <a href="https://www.facebook.com/profile.php?id=100083233527548&mibextid=LQQJ4d" class="mr-3"><img src="{{asset('assets/imgs/Vector-1.png')}}"
                                     alt=""></a>
-                            <a href="" class="mx-3 mt-1"><img src="{{asset('assets/imgs/Vector-2.png')}}"
+                            <a href="https://twitter.com/sahoulat?s=11&t=D9kMmZsxFHGo2X4gBV7ewg" class="mx-3 mt-1"><img src="{{asset('assets/imgs/Vector-2.png')}}"
                                     alt=""></a>
+                            <a href="https://instagram.com/sahoulat_?igshid=NTdlMDg3MTY=" class="text-[#C50000]"><i class="fa fa-instagram"></i></a>
                             <a href="" class="mx-3"><img src="{{asset('assets/imgs/group.png')}}" alt=""></a>
                         </div>
                     </div>
@@ -405,6 +412,8 @@
                             <li><a href="">Sitemap</a></li>
                             <li><a href="">Privacy Policy</a></li>
                             <li><a href="">Terms & Conditions</a></li>
+                            <li><a href="">Intellectual property privacy</a></li>
+                            <li><a href="">Payment policy</a></li>
                         </ul>
                     </div>
                 </div>

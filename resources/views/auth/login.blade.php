@@ -101,9 +101,9 @@
 
                 <div class="col-span-1 login-right">
                     <div class="nav-links flex mt-5 text-white font-medium justify-center">
-                        <a href="/home"
+                        <a href="/"
                             class="mx-5 hover:bg-text-hover px-3 h-8 pt-1 rounded-md"><span>Home</span></a>
-                        <a href="" class="mx-5 hover:bg-text-hover px-3 h-8 pt-1 rounded-md"><span>Become A
+                        <a href="/register" class="mx-5 hover:bg-text-hover px-3 h-8 pt-1 rounded-md"><span>Become A
                                 Seller</span></a>
                         <a href=""
                             class="mx-5 hover:bg-text-hover px-3 h-8 pt-1 rounded-md"><span>About</span></a>

@@ -30,6 +30,12 @@ class User extends Authenticatable implements MustVerifyEmail
         'location',
         'is_deactive',
         'deactivate_reason',
+        'phone_number',
+        'two_factor_authentication',
+        'verification_code',
+        'real_time_notification',
+        'sound_enable',
+        'cnic_image'
     ];
 
     /**
@@ -79,5 +85,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function gigs()
     {
         return $this->hasMany(UserGig::class, 'user_id');
+    }
+
+    public function notification()
+    {
+        return $this->hasOne(UserNotification::class, 'user_id');
     }
 }

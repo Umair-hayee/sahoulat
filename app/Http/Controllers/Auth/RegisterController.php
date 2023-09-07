@@ -89,12 +89,22 @@ class RegisterController extends Controller
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string'],
+            'cnic_image' => ['required', 'image'],
         ]);
         $role = Role::where('id', $request->role_id)->first();
         $user = User::create([
             'name' => $request->first_name.' '.$request->last_name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+        ]);
+        // STORING CNIC IMAGE
+        $file = $request->cnic_image;
+        $fileName = $file->getClientOriginalName();
+        $path = $file->storeAs('/public/user/cnic/'.$user->id, $fileName);
+        $path = explode("public", $path)[1];
+        $path = '/storage' . $path;
+        $user->update([
+            'cnic_image' => $path
         ]);
         $user->assignRole($role);
         $user->sendEmailVerificationNotification();

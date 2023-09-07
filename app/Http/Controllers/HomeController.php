@@ -3,9 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
-use App\Models\Language;
-use App\Models\Proficiency;
 
 class HomeController extends Controller
 {
@@ -26,9 +23,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $user = User::where('id', auth()->user()->id)->first();
-        $languages = Language::all();
-        $proficiency = Proficiency::all();
-        return view('home', compact('user', 'languages', 'proficiency'));
+        return view('home');
     }
 }

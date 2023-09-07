@@ -27,7 +27,7 @@
                             <li class="mb-2">
                                 <a href="javascript:void(0)" onclick="changeToNotificationTab()">
                                     <span class="text-[#D9D9D9] font-medium notification-color">
-                                        Notificatoin
+                                        Notification
                                     </span>
                                 </a>
                             </li>
@@ -37,12 +37,12 @@
                 <div class="col-span-3">
                     @if(Session::has('success'))
                         <div class="mx-5 mb-3 mt-3">
-                            <p class="alert alert-info shadow-lg">{{ Session::get('success') }}</p>
+                            <p class="alert bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">{{ Session::get('success') }}</p>
                         </div>
                     @endif
                     @if(Session::has('error'))
                         <div class="mx-5 mb-3 mt-3">
-                            <p class="alert alert-error shadow-lg">{{ Session::get('error') }}</p>
+                            <p class="alert bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">{{ Session::get('error') }}</p>
                         </div>
                     @endif
                     {{-- ACCOUNT TAB --}}
@@ -164,6 +164,7 @@
                             </form>
                         </div>
                     </div>
+
                     {{-- SECURITY TAB --}}
                     <div class="bg-[#F5F5F5] rounded-md pt-5 pb-5 mx-5 hidden" id="security-tab">
                         <div class="flex justify-start px-8">
@@ -221,15 +222,18 @@
                             <hr>
                         </div>
                         <div class="mt-4 mx-5">
-                            <form action="">
+                            <form id="phone-verification">
+                                @csrf
                                 <div class="grid grid-cols-3">
                                     <div class="col-span-1 mt-2">
                                         <span class="text-[#575757] font-medium">Phone Verification</span>
                                     </div>
 
                                     <div class="col-span-2">
-                                        <input type="text" placeholder="Enter your number to verify"
+                                        <input type="text" name="phone_number" value="{{isset($user->phone_number) ? $user->phone_number : ''}}" id="phone_number" placeholder="Enter your number to verify"
                                             class="w-full py-2 pl-2 rounded-md">
+                                        <div class="error text-red-500 font-bold-500 italic" id="phone_number-error">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-3 mt-3">
@@ -240,7 +244,7 @@
                                     </div>
                                     <div class="col-span-2 mt-1">
                                         <label class="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" value="" class="sr-only peer">
+                                            <input type="checkbox" name="two_factor" @if($user->two_factor_authentication) checked @endif class="sr-only peer">
                                             <div
                                                 class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-1 peer-focus:ring-[#c50000] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#C50000]">
                                             </div>
@@ -253,12 +257,13 @@
                                     </div>
                                 </div>
                                 <div class="flex justify-end mt-4">
-                                    <button class="bg-[#C50000] text-white py-2 px-5 rounded-md" type="submit">Save
+                                    <button class="bg-[#C50000] text-white py-2 px-5 rounded-md" type="button" onclick="phoneVerification()">Save
                                         Changes</button>
                                 </div>
                             </form>
                         </div>
                     </div>
+
                     {{-- NOTIFICATION TAB --}}
                     <div class="bg-[#F5F5F5] rounded-md pt-5 pb-5 mx-5 hidden" id="notification-tab">
                         <div class="flex justify-start px-8">
@@ -291,10 +296,22 @@
                                                     Email
                                                 </span>
                                                 <ul class="text-[#575757] text-xs font-medium">
-                                                    <li><input type="checkbox" name="inbox_messages" id="inbox_messages" class="accent-[#C50000]"></li>
-                                                    <li><input type="checkbox" name="order_messages" id="order_messages" class="accent-[#C50000]"></li>
-                                                    <li><input type="checkbox" name="order_updates" id="order_updates" class="accent-[#C50000]"></li>
-                                                    <li><input type="checkbox" name="rating_reminders" id="rating_reminders" class="accent-[#C50000]"></li>
+                                                    <li><input type="checkbox" name="inbox_messages" id="inbox_messages"
+                                                        @if($user->notification && $user->notification->inbox_message) checked @endif 
+                                                        class="accent-[#C50000]" onclick="inboxMessageCheckbox()">
+                                                    </li>
+                                                    <li><input type="checkbox" name="order_messages" id="order_messages"
+                                                        @if($user->notification && $user->notification->order_messages) checked @endif 
+                                                        class="accent-[#C50000]" onclick="orderMessageCheckbox()">
+                                                    </li>
+                                                    <li><input type="checkbox" name="order_updates" id="order_updates"
+                                                        @if($user->notification && $user->notification->order_updates) checked @endif
+                                                        class="accent-[#C50000]" onclick="orderUpdateCheckbox()">
+                                                    </li>
+                                                    <li><input type="checkbox" name="rating_reminders" id="rating_reminders"
+                                                        @if($user->notification && $user->notification->rating_reminders) checked @endif
+                                                        class="accent-[#C50000]" onclick="ratingReminderCheckbox()">
+                                                    </li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -307,7 +324,8 @@
                             <hr>
                         </div>
                         <div class="mt-4 mx-5">
-                            <form action="">
+                            <form id="notifications">
+                                @csrf
                                 <div class="grid grid-cols-3">
                                     <div class="col-span-1 mt-2">
                                         <span class="text-[#575757] font-medium text-lg">Real Time
@@ -321,7 +339,7 @@
                                     </div>
                                     <div class="col-span-2 mt-1">
                                         <label class="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" value="" class="sr-only peer">
+                                            <input type="checkbox" name="real_time_notification" id="real_time_notification" @if($user->real_time_notification) checked @endif class="sr-only peer">
                                             <div
                                                 class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-1 peer-focus:ring-[#c50000] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#C50000]">
                                             </div>
@@ -335,7 +353,7 @@
                                     </div>
                                     <div class="col-span-2 mt-1">
                                         <label class="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" value="" class="sr-only peer">
+                                            <input type="checkbox" name="sound" @if($user->sound_enable) checked @endif id="sound" class="sr-only peer">
                                             <div
                                                 class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-1 peer-focus:ring-[#c50000] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#C50000]">
                                             </div>
@@ -343,7 +361,7 @@
                                     </div>
                                 </div>
                                 <div class="flex justify-end mt-4">
-                                    <button class="bg-[#C50000] text-white py-2 px-5 rounded-md" type="submit">Save
+                                    <button class="bg-[#C50000] text-white py-2 px-5 rounded-md" type="button" onclick="saveNotificationChanges()">Save
                                         Changes</button>
                                 </div>
                             </form>
@@ -390,7 +408,8 @@
             $(".security-color").addClass("text-[#D9D9D9]");
         }
 
-        function setPassword(){
+        function setPassword()
+        {
             var formdata = new FormData($('#set-password-form')[0])
             $.ajaxSetup({
                 headers: {
@@ -399,7 +418,7 @@
             });
             $.ajax({
                 type: "POST",
-                url: "/auth/user/set-password",
+                url: "/seller/set-password",
                 data: formdata,
                 processData: false,
                 contentType: false,
@@ -411,7 +430,10 @@
                             icon: 'success',
                             title: 'SUCCESS...',
                             text: 'Password Changed Successfully!',
-                        })
+                            backdrop: false,
+                        }).then(function(){
+                            window.location.reload();
+                        });
                     } else if(response.success == false){
                         Swal.fire({
                             icon: 'error',
@@ -429,6 +451,86 @@
             });
         }
 
+        function saveNotificationChanges()
+        {
+            var formdata = new FormData($('#notifications')[0])
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type: "POST",
+                url: "/seller/notifications",
+                data: formdata,
+                processData: false,
+                contentType: false,
+                cache: false,
+                timeout: 800000,
+                success: function(response) {
+                    if(response.success == true){
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'SUCCESS...',
+                            text: 'Notifications Set Successfully!',
+                            backdrop: false,
+                        }).then(function(){
+                            window.location.reload();
+                        });
+                    } else if(response.success == false){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: response.message,
+                        })
+                    } 
+                },
+            });
+        }
+
+        function phoneVerification()
+        {
+            var formdata = new FormData($('#phone-verification')[0])
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type: "POST",
+                url: "/seller/phone-verification",
+                data: formdata,
+                processData: false,
+                contentType: false,
+                cache: false,
+                timeout: 800000,
+                success: function(response) {
+                    if(response.success == true){
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'SUCCESS...',
+                            text: 'Changes applied successfully!',
+                            backdrop: false,
+                        }).then(function(){
+                            window.location.reload();
+                        });
+                    } else if(response.success == false){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: response.message,
+                        })
+                    } 
+                },
+                error: function(response) {
+                    var response = JSON.parse(response.responseText);
+                    $.each( response.errors, function( key, value) {
+                        $('#phone-verification #'+key+'-error').text(value)
+                    });
+                }
+            });
+        }
+
         function saveReasonToLeave()
         {
             var formdata = new FormData($('#deactivate-form')[0])
@@ -439,7 +541,7 @@
             });
             $.ajax({
                 type: "POST",
-                url: "/auth/user/deactivate-account",
+                url: "/seller/deactivate-account",
                 data: formdata,
                 processData: false,
                 contentType: false,
@@ -454,7 +556,8 @@
                             showCancelButton: false,
                             confirmButtonColor: '#3085d6',
                             cancelButtonColor: '#d33',
-                            confirmButtonText: 'OK'
+                            confirmButtonText: 'OK',
+                            backdrop: false,
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 event.preventDefault();
@@ -471,6 +574,306 @@
                 }
             });
         }
+
+        // INBOX MESSAGE NOTIFICATION
+        $('#inbox_messages').change(function() {
+            if($(this).is(":checked")) {
+                var check = true;
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    url: "/seller/inbox-notifications",
+                    data: {
+                        'check' : check
+                    },
+                    success: function(response) {
+                        if(response.success == true){
+                            Swal.fire({
+                                title: 'SUCCESS!',
+                                text: "Notification updated successfully!",
+                                icon: 'success',
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'OK',
+                                backdrop: false,
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = "/seller/settings"
+                                }
+                            })
+                        } 
+                    },
+                    error: function(response) {
+                        
+                    }
+                });
+            } else {
+                var check = false;
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    url: "/seller/inbox-notifications",
+                    data: {
+                        'check' : check
+                    },
+                    success: function(response) {
+                        if(response.success == true){
+                            Swal.fire({
+                                title: 'SUCCESS!',
+                                text: "Notification updated successfully!",
+                                icon: 'success',
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'OK',
+                                backdrop: false,
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = "/seller/settings"
+                                }
+                            })
+                        } 
+                    },
+                    error: function(response) {
+                        
+                    }
+                });
+            }
+        });
+
+        // ORDER MESSAGE NOTIFICATION
+        $('#order_messages').change(function() {
+            if($(this).is(":checked")) {
+                var check = true;
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    url: "/seller/order-notifications",
+                    data: {
+                        'check' : check
+                    },
+                    success: function(response) {
+                        if(response.success == true){
+                            Swal.fire({
+                                title: 'SUCCESS!',
+                                text: "Notification updated successfully!",
+                                icon: 'success',
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'OK',
+                                backdrop: false,
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = "/seller/settings"
+                                }
+                            })
+                        } 
+                    },
+                    error: function(response) {
+                        
+                    }
+                });
+            } else {
+                var check = false;
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    url: "/seller/order-notifications",
+                    data: {
+                        'check' : check
+                    },
+                    success: function(response) {
+                        if(response.success == true){
+                            Swal.fire({
+                                title: 'SUCCESS!',
+                                text: "Notification updated successfully!",
+                                icon: 'success',
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'OK',
+                                backdrop: false,
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = "/seller/settings"
+                                }
+                            })
+                        } 
+                    },
+                    error: function(response) {
+                        
+                    }
+                });
+            }
+        });
+
+        // ORDER UPDATE NOTIFICATION
+        $('#order_updates').change(function() {
+            if($(this).is(":checked")) {
+                var check = true;
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    url: "/seller/order-update/notifications",
+                    data: {
+                        'check' : check
+                    },
+                    success: function(response) {
+                        if(response.success == true){
+                            Swal.fire({
+                                title: 'SUCCESS!',
+                                text: "Notification updated successfully!",
+                                icon: 'success',
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'OK',
+                                backdrop: false,
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = "/seller/settings"
+                                }
+                            })
+                        } 
+                    },
+                    error: function(response) {
+                        
+                    }
+                });
+            } else {
+                var check = false;
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    url: "/seller/order-update/notifications",
+                    data: {
+                        'check' : check
+                    },
+                    success: function(response) {
+                        if(response.success == true){
+                            Swal.fire({
+                                title: 'SUCCESS!',
+                                text: "Notification updated successfully!",
+                                icon: 'success',
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'OK',
+                                backdrop: false,
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = "/seller/settings"
+                                }
+                            })
+                        } 
+                    },
+                    error: function(response) {
+                        
+                    }
+                });
+            }
+        });
+
+        // RATING REMINDERS
+        $('#rating_reminders').change(function() {
+            if($(this).is(":checked")) {
+                var check = true;
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    url: "/seller/rating-reminder/notifications",
+                    data: {
+                        'check' : check
+                    },
+                    success: function(response) {
+                        if(response.success == true){
+                            Swal.fire({
+                                title: 'SUCCESS!',
+                                text: "Notification updated successfully!",
+                                icon: 'success',
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'OK',
+                                backdrop: false,
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = "/seller/settings"
+                                }
+                            })
+                        } 
+                    },
+                    error: function(response) {
+                        
+                    }
+                });
+            } else {
+                var check = false;
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    url: "/seller/rating-reminder/notifications",
+                    data: {
+                        'check' : check
+                    },
+                    success: function(response) {
+                        if(response.success == true){
+                            Swal.fire({
+                                title: 'SUCCESS!',
+                                text: "Notification updated successfully!",
+                                icon: 'success',
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'OK',
+                                backdrop: false,
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = "/seller/settings"
+                                }
+                            })
+                        } 
+                    },
+                    error: function(response) {
+                        
+                    }
+                });
+            }
+        });
 
     </script> 
 @endpush

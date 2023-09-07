@@ -36,4 +36,10 @@ return [
         'redirect' => env('GOOGLE_REDIRECT', 'https://sahoulat.com/google/callback'),
     ],
 
+    'twilio' => [
+        'account_sid' => env('ACCOUNT_SID', ''),
+        'auth_token' => env('AUTH_TOKEN', ''),
+        'sender_number' => env('SENDER_NUMBER', '')
+    ],
+
 ];

@@ -52,7 +52,7 @@
                         <span class="text-[#575757] text-base font-normal">Already A Member? <a href="/login"> <span
                                     class="text-[#C50000]"> Log In</span></a></span>
                     </div>
-                    <form method="POST" action="{{route('register.user')}}" class="w-[80%]">
+                    <form method="POST" action="{{route('register.user')}}" class="w-[80%]" enctype="multipart/form-data">
                         @csrf
                         <div class="grid grid-cols-2 gap-3 mt-5">
                             <div class="col span-1">
@@ -84,6 +84,16 @@
                                     <option value="{{$role->id}}">{{$role->name}}</option>
                                 @endforeach
                             </select>
+                        </div>
+                        <div class="mt-4">
+                            <label style="color: red; font-style:italic; font-weight:bold">Upload CNIC Image*</label>
+                            <input type="file" name="cnic_image"
+                                class="bg-[#F5F5F5] w-full py-3 pl-2 rounded-md">
+                                @if($errors->has('cnic_image'))
+                                    <div class="error" style="color: red; font-style:italic; font-weight:bold">
+                                        {{ $errors->first('cnic_image') }}
+                                    </div>
+                                @endif
                         </div>
                         <div class="mt-4">
                             <input type="email" name="email" placeholder="Enter Email"
@@ -128,9 +138,9 @@
 
                 <div class="col-span-1 login-right">
                     <div class="nav-links flex mt-5 text-white font-medium justify-center">
-                        <a href="/home"
+                        <a href="/"
                             class="mx-5 hover:bg-text-hover px-3 h-8 pt-1 rounded-md"><span>Home</span></a>
-                        <a href="" class="mx-5 hover:bg-text-hover px-3 h-8 pt-1 rounded-md"><span>Become A
+                        <a href="/register" class="mx-5 hover:bg-text-hover px-3 h-8 pt-1 rounded-md"><span>Become A
                                 Seller</span></a>
                         <a href=""
                             class="mx-5 hover:bg-text-hover px-3 h-8 pt-1 rounded-md"><span>About</span></a>

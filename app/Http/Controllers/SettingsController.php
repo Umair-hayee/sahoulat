@@ -6,12 +6,14 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\UserNotification;
 
 class SettingsController extends Controller
 {
     public function index()
     {
-        return view('settings.index');
+        $user = User::where('id', auth()->user()->id)->first();
+        return view('settings.index', compact('user'));
     }
 
     public function storeProfileSettings(Request $request)
@@ -70,6 +72,109 @@ class SettingsController extends Controller
         $user->update([
             'is_deactive' => 1,
             'deactivate_reason' => $request->reason
+        ]);
+        return response()->json(['success' => true]);
+    }
+    
+    public function inboxNotifications(Request $request)
+    {
+        if($request->check == "true"){
+            UserNotification::updateOrCreate([
+                'user_id' => auth()->user()->id,
+            ],[
+                'inbox_message' => 1
+            ]);
+        } else if($request->check == "false"){
+            $userNotification = UserNotification::where('user_id', auth()->user()->id)->first();
+            $userNotification->update([
+                'inbox_message' => 0
+            ]);
+        }
+        return response()->json(['success' => true]);
+    }
+
+    public function orderNotifications(Request $request)
+    {
+        if($request->check == "true"){
+            UserNotification::updateOrCreate([
+                'user_id' => auth()->user()->id,
+            ],[
+                'order_messages' => 1
+            ]);
+        } else if($request->check == "false"){
+            $userNotification = UserNotification::where('user_id', auth()->user()->id)->first();
+            $userNotification->update([
+                'order_messages' => 0
+            ]);
+        }
+        return response()->json(['success' => true]);
+    }
+
+    public function orderUpdatesNotifications(Request $request)
+    {
+        if($request->check == "true"){
+            UserNotification::updateOrCreate([
+                'user_id' => auth()->user()->id,
+            ], [
+                'order_updates' => 1
+            ]);
+        } else if($request->check == "false"){
+            $userNotification = UserNotification::where('user_id', auth()->user()->id)->first();
+            $userNotification->update([
+                'order_updates' => 0
+            ]);
+        }
+        return response()->json(['success' => true]);
+    }
+
+    public function ratingReminderNotifications(Request $request)
+    {
+        if($request->check == "true"){
+            UserNotification::updateOrCreate([
+                'user_id' => auth()->user()->id,
+            ],[
+                'rating_reminders' => 1
+            ]);
+        } else if($request->check == "false"){
+            $userNotification = UserNotification::where('user_id', auth()->user()->id)->first();
+            $userNotification->update([
+                'rating_reminders' => 0
+            ]);
+        }
+        return response()->json(['success' => true]);
+    }
+
+    public function notifications(Request $request)
+    {
+        $realTimeNotification = false;
+        $sound = false;
+        $user = User::where('id', auth()->user()->id)->first();
+        if($request->has('real_time_notification')){
+            $realTimeNotification = true;
+        }
+        if($request->has('sound')){
+            $sound = true;
+        }
+        $user->update([
+            'real_time_notification' => $realTimeNotification,
+            'sound_enable' => $sound
+        ]);
+        return response()->json(['success' => true]);
+    }
+
+    public function phoneVerification(Request $request)
+    {
+        $request->validate([
+            'phone_number' => 'required',
+        ]);
+        $user = User::where('id', auth()->user()->id)->first();
+        $twoFactorCheckbox = false;
+        if($request->has('two_factor')){
+            $twoFactorCheckbox = true;
+        }
+        $user->update([
+            'phone_number' => $request->phone_number,
+            'two_factor_authentication' => $twoFactorCheckbox
         ]);
         return response()->json(['success' => true]);
     }

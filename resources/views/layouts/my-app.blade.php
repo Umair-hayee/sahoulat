@@ -26,9 +26,13 @@
             background-color: #c50000;
             height: 2px;
         }
+
+        .footer-social-links i{
+            font-size: 25px !important;
+            margin-left: 5px;
+        }
     </style>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.46.0/dist/full.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>

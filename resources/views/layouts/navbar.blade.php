@@ -5,11 +5,14 @@
                 <a href=""><img src="{{asset('assets/imgs/Logo Sahoulatb.png')}}" alt="" class="h-16 w-16"></a>
             </div>
             <div class="nav-links flex mt-5 text-[#292929] font-medium">
-                <a href="/home" class="mx-5 hover:bg-[#C5000040] px-3 h-8 pt-1 rounded-md"><span>Home</span></a>
-                <a href="" class="mx-5 hover:bg-[#C5000040] px-3 h-8 pt-1 rounded-md"><span>Become A
-                        Seller</span></a>
-                <a href="" class="mx-5 hover:bg-[#C5000040] px-3 h-8 pt-1 rounded-md"><span>About</span></a>
+                <a href="{{route('seller.dashboard')}}" class="mx-5 hover:bg-[#C5000040] px-3 h-8 pt-1 rounded-md"><span>Home</span></a>
+                {{-- <a href="" class="mx-5 hover:bg-[#C5000040] px-3 h-8 pt-1 rounded-md"><span>Become A
+                        Seller</span></a> --}}
+                {{-- <a href="" class="mx-5 hover:bg-[#C5000s040] px-3 h-8 pt-1 rounded-md"><span>About</span></a> --}}
                 @auth
+                <a href="{{route('orders.index')}}" class="mx-5 hover:bg-[#C5000040] px-3 h-8 pt-1 rounded-md"><span>Orders</span></a>
+                <a href="{{route('earnings.index')}}" class="mx-5 hover:bg-[#C5000040] px-3 h-8 pt-1 rounded-md"><span>Earnings</span></a>
+                <a href="/chatify" target="_blank" class="mx-5 hover:bg-[#C5000040] px-3 h-8 pt-1 rounded-md"><span>Chat</span></a>
                 <a href="{{route('settings.index')}}" class="mx-5 hover:bg-[#C5000040] px-3 h-8 pt-1 rounded-md"><span>Settings</span></a>
                 @endauth
                 @auth

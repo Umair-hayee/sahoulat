@@ -16,10 +16,10 @@ class CreateUserNotificationsTable extends Migration
         Schema::create('user_notifications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
-            $table->boolean('inbox_message')->nullable();
-            $table->boolean('order_messages')->nullable();
-            $table->boolean('order_updates')->nullable();
-            $table->boolean('rating_reminders')->nullable();
+            $table->boolean('inbox_message')->default(0)->nullable();
+            $table->boolean('order_messages')->default(0)->nullable();
+            $table->boolean('order_updates')->default(0)->nullable();
+            $table->boolean('rating_reminders')->default(0)->nullable();
             $table->timestamps();
         });
     }
